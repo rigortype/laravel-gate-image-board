@@ -11,3 +11,11 @@ parameters:
         - routes/
 
     level: 7
+
+    ignoreErrors:
+        -
+            identifier: larastan.noEnvCallsOutsideOfConfig
+            path: app/Support/LspSurface.php
+        -
+            identifier: argument.type
+            path: app/Support/LspSurface.php

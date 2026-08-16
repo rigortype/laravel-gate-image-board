@@ -21,7 +21,7 @@
                             {{ __('Dashboard') }}
                         </flux:sidebar.item>
                         <flux:sidebar.item icon="layout-grid" :href="route('boards.index')" :current="request()->routeIs('boards.*') || request()->routeIs('threads.*')" wire:navigate>
-                            {{ __('Boards') }}
+                            {{ __('boards.index') }}
                         </flux:sidebar.item>
                     @else
                         <flux:sidebar.item icon="home" :href="route('home')" :current="request()->routeIs('home')" wire:navigate>
@@ -29,7 +29,7 @@
                         </flux:sidebar.item>
                     @endauth
                     <flux:sidebar.item icon="globe-alt" :href="route('explore')" :current="request()->routeIs('explore', 'explore.board')" data-test="explore-nav">
-                        {{ __('Explore') }}
+                        {{ __('boards.explore') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>

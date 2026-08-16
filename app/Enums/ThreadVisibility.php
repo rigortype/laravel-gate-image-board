@@ -15,10 +15,10 @@ enum ThreadVisibility: string
     public function label(): string
     {
         return match ($this) {
-            self::Public => __('Public'),
-            self::Team => __('Team only'),
-            self::Unlisted => __('Unlisted'),
-            self::Private => __('Private'),
+            self::Public => __('boards.visibility.public'),
+            self::Team => __('boards.visibility.team'),
+            self::Unlisted => __('boards.visibility.unlisted'),
+            self::Private => __('boards.visibility.private'),
         };
     }
 
@@ -28,10 +28,10 @@ enum ThreadVisibility: string
     public function description(): string
     {
         return match ($this) {
-            self::Public => __('Anyone can find and view this thread.'),
-            self::Team => __('Only members of this team can view this thread.'),
-            self::Unlisted => __('Hidden from listings. Anyone with the link can view it.'),
-            self::Private => __('Only you can view this thread.'),
+            self::Public => __('boards.visibility.public_help'),
+            self::Team => __('boards.visibility.team_help'),
+            self::Unlisted => __('boards.visibility.unlisted_help'),
+            self::Private => __('boards.visibility.private_help'),
         };
     }
 

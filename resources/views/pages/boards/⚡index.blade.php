@@ -73,7 +73,7 @@ new #[Layout('layouts::app'), Title('Boards')] class extends Component {
 <section class="w-full space-y-6">
     <div class="flex items-center justify-between gap-4">
         <div>
-            <flux:heading size="xl">{{ __('Boards') }}</flux:heading>
+            <flux:heading size="xl">{{ __('boards.index') }}</flux:heading>
             <flux:subheading>{{ __('Threads and images for :team', ['team' => $this->team()->name]) }}</flux:subheading>
         </div>
 

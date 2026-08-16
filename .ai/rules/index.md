@@ -6,3 +6,5 @@ Before planning or editing, find the row whose globs match the file's path and r
 | --- | --- |
 | resources/views/folio/explore/** | .ai/rules/explore.md |
 | resources/views/folio/** | .ai/rules/folio.md |
+| lang/** | .ai/rules/lang.md |
+| app/Support/LspSurface.php | .ai/rules/support.md |

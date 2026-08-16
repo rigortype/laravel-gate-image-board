@@ -14,7 +14,7 @@
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
                 <flux:navbar.item icon="rectangle-stack" :href="route('boards.index')" :current="request()->routeIs('boards.*') || request()->routeIs('threads.*')" wire:navigate>
-                    {{ __('Boards') }}
+                    {{ __('boards.index') }}
                 </flux:navbar.item>
             </flux:navbar>
 

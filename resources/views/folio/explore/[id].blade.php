@@ -28,7 +28,7 @@ render(function (View $view, string $id) {
     <section class="w-full space-y-8" data-test="explore-board">
         <div class="space-y-2">
             <flux:breadcrumbs>
-                <flux:breadcrumbs.item :href="route('explore')">{{ __('Explore') }}</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item :href="route('explore')">{{ __('boards.explore') }}</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>{{ $board->name }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
 
@@ -44,7 +44,7 @@ render(function (View $view, string $id) {
                 <x-public-thread-row :thread="$thread" />
             @empty
                 <flux:text class="py-8 text-center text-zinc-500 dark:text-zinc-400">
-                    {{ __('No public threads on this board.') }}
+                    {{ __('boards.explore_empty_board', ['name' => $board->name]) }}
                 </flux:text>
             @endforelse
         </div>

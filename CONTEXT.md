@@ -57,5 +57,5 @@ The unguessable identifier in an unlisted thread's share URL.
 _Avoid_: Password, slug, secret key
 
 **Explore**:
-The guest-readable catalog of public threads at `/explore`, served by Folio.
+The guest-readable catalog of public threads at `/explore`, served by Folio. Copy lives in `lang/en/boards.php` as dotted `__()` keys.
 _Avoid_: Discover, browse, public index

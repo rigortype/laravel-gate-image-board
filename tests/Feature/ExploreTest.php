@@ -92,5 +92,5 @@ test('the home page links to explore', function () {
     $this->get(route('home'))
         ->assertOk()
         ->assertSee('/explore', false)
-        ->assertSee(__('Explore'));
+        ->assertSee(__('boards.explore'));
 });

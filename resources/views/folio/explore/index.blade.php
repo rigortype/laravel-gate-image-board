@@ -20,11 +20,11 @@ render(function (View $view) {
 
 ?>
 
-<x-layouts::app :title="__('Explore')">
+<x-layouts::app :title="__('boards.explore')">
     <section class="w-full space-y-8" data-test="explore-catalog">
         <div class="space-y-2">
-            <flux:heading size="xl">{{ __('Explore') }}</flux:heading>
-            <flux:subheading>{{ __('Public threads anyone can find and read.') }}</flux:subheading>
+            <flux:heading size="xl">{{ __('boards.explore') }}</flux:heading>
+            <flux:subheading>{{ __('boards.explore_lead') }}</flux:subheading>
         </div>
 
         <div class="space-y-3">
@@ -32,7 +32,7 @@ render(function (View $view) {
                 <x-public-thread-row :thread="$thread" :show-board="true" />
             @empty
                 <flux:text class="py-8 text-center text-zinc-500 dark:text-zinc-400">
-                    {{ __('No public threads yet.') }}
+                    {{ __('boards.explore_empty') }}
                 </flux:text>
             @endforelse
         </div>

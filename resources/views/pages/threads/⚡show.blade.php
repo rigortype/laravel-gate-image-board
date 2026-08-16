@@ -106,7 +106,7 @@ new #[Layout('layouts::app'), Title('Thread')] class extends Component {
     <div class="space-y-2">
         <flux:breadcrumbs>
             @auth
-                <flux:breadcrumbs.item :href="route('boards.index')" wire:navigate>{{ __('Boards') }}</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item :href="route('boards.index')" wire:navigate>{{ __('boards.index') }}</flux:breadcrumbs.item>
             @endauth
             <flux:breadcrumbs.item :href="route('boards.show', $board)" wire:navigate>{{ $board->name }}</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>{{ $thread->subject ?: __('Thread #:id', ['id' => $thread->id]) }}</flux:breadcrumbs.item>
