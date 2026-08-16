@@ -17,6 +17,8 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+/database/dusk.sqlite
+/database/dusk.sqlite-journal
 /auth.json
 /.fleet
 /.idea
