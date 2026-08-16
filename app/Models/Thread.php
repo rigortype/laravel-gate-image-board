@@ -15,6 +15,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
+use Spatie\Feed\Feedable;
+use Spatie\Feed\FeedItem;
+use Spatie\Sitemap\Contracts\Sitemapable;
+use Spatie\Sitemap\Tags\Url;
 
 /**
  * @property int $id
@@ -30,7 +34,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Post> $posts
  */
 #[Fillable(['board_id', 'subject', 'visibility', 'share_token', 'bumped_at'])]
-class Thread extends Model
+class Thread extends Model implements Feedable, Sitemapable
 {
     /** @use HasFactory<ThreadFactory> */
     use HasFactory;
@@ -82,6 +86,61 @@ class Thread extends Model
         }
 
         return $this->openingPost?->user_id === $user->id;
+    }
+
+    /**
+     * Public URL for this thread.
+     */
+    public function url(): string
+    {
+        return route('threads.show', [
+            'current_team' => $this->board->team,
+            'board' => $this->board,
+            'thread' => $this,
+        ]);
+    }
+
+    /**
+     * Sitemap entry for this thread.
+     */
+    public function toSitemapTag(): Url
+    {
+        return Url::create($this->url())
+            ->setLastModificationDate($this->bumped_at)
+            ->setChangeFrequency(Url::CHANGE_FREQUENCY_HOURLY)
+            ->setPriority(0.8);
+    }
+
+    /**
+     * Feed entry for this thread.
+     */
+    public function toFeedItem(): FeedItem
+    {
+        $opening = $this->openingPost;
+        $author = $opening?->author;
+
+        return FeedItem::create()
+            ->id($this->url())
+            ->title($this->subject ?: __('No subject'))
+            ->summary($opening === null ? '' : $opening->body)
+            ->updated($this->bumped_at)
+            ->link($this->url())
+            ->authorName($author === null ? __('Unknown') : $author->name);
+    }
+
+    /**
+     * Public threads for the site feed.
+     *
+     * @return Collection<int, static>
+     */
+    public static function getFeedItems(): Collection
+    {
+        return static::query()
+            ->where('visibility', ThreadVisibility::Public)
+            ->with(['board.team', 'openingPost.author'])
+            ->latest('bumped_at')
+            ->limit(50)
+            ->get();
     }
 
     /**

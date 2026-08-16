@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Spatie\Sitemap\Contracts\Sitemapable;
+use Spatie\Sitemap\Tags\Url;
 
 /**
  * @property int $id
@@ -24,7 +26,7 @@ use Illuminate\Support\Str;
  * @property-read Collection<int, Thread> $threads
  */
 #[Fillable(['name', 'slug', 'description', 'team_id'])]
-class Board extends Model
+class Board extends Model implements Sitemapable
 {
     /** @use HasFactory<BoardFactory> */
     use HasFactory;
@@ -55,6 +57,28 @@ class Board extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    /**
+     * Public URL for this board.
+     */
+    public function url(): string
+    {
+        return route('boards.show', [
+            'current_team' => $this->team,
+            'board' => $this,
+        ]);
+    }
+
+    /**
+     * Sitemap entry for this board.
+     */
+    public function toSitemapTag(): Url
+    {
+        return Url::create($this->url())
+            ->setLastModificationDate($this->updated_at ?? $this->created_at ?? now())
+            ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+            ->setPriority(0.7);
     }
 
     /**

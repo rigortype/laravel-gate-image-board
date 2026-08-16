@@ -1,9 +1,15 @@
 <?php
 
+use App\Actions\Seo\BuildSitemap;
 use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+
+Route::feeds();
+
+Route::get('sitemap.xml', fn (BuildSitemap $buildSitemap) => $buildSitemap->handle())
+    ->name('sitemap');
 
 Route::livewire('t/{thread:share_token}', 'pages::threads.show')->name('threads.shared');
 
