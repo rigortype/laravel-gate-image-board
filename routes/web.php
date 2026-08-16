@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
+if (Route::hasMacro('mailPreview')) {
+    Route::mailPreview();
+}
+
 Route::feeds();
 
 Route::get('sitemap.xml', fn (BuildSitemap $buildSitemap) => $buildSitemap->handle())

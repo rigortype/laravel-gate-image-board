@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "269f864083401f6a98fb8104a8e92e46",
+    "content-hash": "57bcb6126329e67555b55d7ef9632438",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -11733,6 +11733,83 @@
                 }
             ],
             "time": "2026-02-06T04:52:52+00:00"
+        },
+        {
+            "name": "spatie/laravel-mail-preview",
+            "version": "6.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-mail-preview.git",
+                "reference": "49f93868df17f3ceba201c6784e6807c6abed341"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-mail-preview/zipball/49f93868df17f3ceba201c6784e6807c6abed341",
+                "reference": "49f93868df17f3ceba201c6784e6807c6abed341",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/filesystem": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/mail": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.11"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
+                "spatie/ray": "^1.27"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "sentMails": "Spatie\\MailPreview\\Facades\\SentMails"
+                    },
+                    "providers": [
+                        "Spatie\\MailPreview\\MailPreviewServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\MailPreview\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be"
+                },
+                {
+                    "name": "Mohamed Said",
+                    "email": "themsaid@gmail.com"
+                }
+            ],
+            "description": "A mail driver to quickly preview mail",
+            "homepage": "https://github.com/themsaid/laravel-preview-mail-driver",
+            "keywords": [
+                "laravel",
+                "mail"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-mail-preview/issues",
+                "source": "https://github.com/spatie/laravel-mail-preview/tree/6.2.3"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-05-21T10:30:15+00:00"
         },
         {
             "name": "staabm/side-effects-detector",
