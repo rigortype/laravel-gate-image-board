@@ -28,6 +28,9 @@
                             {{ __('Home') }}
                         </flux:sidebar.item>
                     @endauth
+                    <flux:sidebar.item icon="globe-alt" :href="route('explore')" :current="request()->routeIs('explore', 'explore.board')" data-test="explore-nav">
+                        {{ __('Explore') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

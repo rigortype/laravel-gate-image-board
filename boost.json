@@ -13,6 +13,7 @@
     "sail": false,
     "skills": [
         "infer-conventions",
+        "folio-routing",
         "fortify-development",
         "laravel-best-practices",
         "fluxui-development",

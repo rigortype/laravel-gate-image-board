@@ -5,7 +5,7 @@ use App\Models\Post;
 use App\Models\Thread;
 use App\Models\User;
 
-test('the sitemap lists the home page, boards, and public threads', function () {
+test('the sitemap lists the home page, explore catalog, boards, and public threads', function () {
     $user = User::factory()->create();
     $board = Board::factory()->for($user->currentTeam)->create();
 
@@ -19,6 +19,7 @@ test('the sitemap lists the home page, boards, and public threads', function () 
         ->assertOk()
         ->assertHeader('content-type', 'text/xml; charset=UTF-8')
         ->assertSee(route('home'), false)
+        ->assertSee(route('explore'), false)
         ->assertSee($board->url(), false)
         ->assertSee($public->url(), false)
         ->assertDontSee($teamOnly->url(), false);

@@ -111,6 +111,14 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test --compact` with a specific filename or filter.
 
+=== folio/core rules ===
+
+# Laravel Folio
+
+- Laravel Folio is a powerful page-based router that simplifies routing in Laravel applications.
+- Routes are generated automatically by creating Blade templates in `resources/views/pages`.
+- IMPORTANT: Activate 'folio-routing' when working with Folio, pages, routes, route parameters, model binding, middleware, or `resources/views/pages`.
+
 === laravel/core rules ===
 
 # Do Things the Laravel Way

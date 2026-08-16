@@ -21,7 +21,7 @@ Auth, teams, and settings come from the Livewire starter kit. Each team has boar
 ## Stack
 
 - PHP 8.3+, Laravel 13
-- Livewire 4, Flux UI, Laravel Fortify
+- Livewire 4, Flux UI, Laravel Fortify, Laravel Folio
 - Pest, Larastan, Pint
 - Tailwind CSS 4, Vite 8
 

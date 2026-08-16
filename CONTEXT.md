@@ -55,3 +55,7 @@ _Avoid_: 非公開 as a code name
 **Share token**:
 The unguessable identifier in an unlisted thread's share URL.
 _Avoid_: Password, slug, secret key
+
+**Explore**:
+The guest-readable catalog of public threads at `/explore`, served by Folio.
+_Avoid_: Discover, browse, public index
