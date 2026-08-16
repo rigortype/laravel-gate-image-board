@@ -16,7 +16,7 @@ php-typing-conformance measures how tools treat a single type spelling. Gate is 
 
 Stage 1 is a normal app. Stage 2 keeps it runnable; the extra idioms are the corpus, not broken or synthetic code.
 
-The tree is still the official Laravel Livewire starter kit (Fortify auth, 2FA, passkeys, teams, settings). Imageboard features are not in yet.
+Auth, teams, and settings come from the Livewire starter kit. Each team has boards; members start threads with an image and reply with text and/or an image. Files go on the local `public` disk (SQLite + `storage/app/public`).
 
 ## Stack
 
@@ -33,6 +33,8 @@ composer dev
 ```
 
 `composer test` runs Pint, PHPStan (Larastan), and Pest.
+
+New teams get a `General` board. `composer setup` creates `public/storage` so uploaded images can be served.
 
 ## Copyright
 

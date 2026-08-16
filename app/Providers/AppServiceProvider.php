@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Team;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -31,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureDefaults(): void
     {
+        Route::bind('current_team', function (string $value): Team {
+            return Team::where('slug', $value)->firstOrFail();
+        });
+
         Date::use(CarbonImmutable::class);
 
         DB::prohibitDestructiveCommands(
