@@ -20,9 +20,9 @@ class BoardPolicy
     /**
      * Determine whether the user can view the board.
      */
-    public function view(User $user, Board $board): bool
+    public function view(?User $user, Board $board): bool
     {
-        return $user->belongsToTeam($board->team);
+        return true;
     }
 
     /**

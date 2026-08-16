@@ -1,12 +1,14 @@
 <?php
 
 use App\Actions\Threads\CreateThread;
+use App\Enums\ThreadVisibility;
 use App\Models\Board;
 use App\Models\Thread;
 use Flux\Flux;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -22,6 +24,8 @@ new #[Layout('layouts::app'), Title('Board')] class extends Component {
     public string $subject = '';
 
     public string $body = '';
+
+    public string $visibility = ThreadVisibility::Team->value;
 
     public mixed $image = null;
 
@@ -39,6 +43,7 @@ new #[Layout('layouts::app'), Title('Board')] class extends Component {
         $validated = $this->validate([
             'subject' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string', 'max:10000'],
+            'visibility' => ['required', Rule::enum(ThreadVisibility::class)],
             'image' => ['required', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
         ]);
 
@@ -48,9 +53,11 @@ new #[Layout('layouts::app'), Title('Board')] class extends Component {
             $validated['body'],
             $this->image,
             $validated['subject'] ?: null,
+            ThreadVisibility::from($validated['visibility']),
         );
 
         $this->reset('subject', 'body', 'image');
+        $this->visibility = ThreadVisibility::Team->value;
 
         Flux::toast(variant: 'success', text: __('Thread created.'));
 
@@ -67,17 +74,25 @@ new #[Layout('layouts::app'), Title('Board')] class extends Component {
     public function threads(): LengthAwarePaginator
     {
         return $this->board->threads()
+            ->visibleInCatalogTo(Auth::user(), $this->board)
             ->with(['openingPost.author', 'openingPost.image', 'board.team'])
             ->withCount('posts')
             ->latest('bumped_at')
             ->paginate(20);
+    }
+
+    public function canCreateThread(): bool
+    {
+        return Auth::user()?->can('create', [Thread::class, $this->board]) ?? false;
     }
 }; ?>
 
 <section class="w-full space-y-8">
     <div class="space-y-2">
         <flux:breadcrumbs>
-            <flux:breadcrumbs.item :href="route('boards.index')" wire:navigate>{{ __('Boards') }}</flux:breadcrumbs.item>
+            @auth
+                <flux:breadcrumbs.item :href="route('boards.index')" wire:navigate>{{ __('Boards') }}</flux:breadcrumbs.item>
+            @endauth
             <flux:breadcrumbs.item>{{ $board->name }}</flux:breadcrumbs.item>
         </flux:breadcrumbs>
 
@@ -88,23 +103,30 @@ new #[Layout('layouts::app'), Title('Board')] class extends Component {
         @endif
     </div>
 
-    <flux:card class="space-y-4">
-        <flux:heading size="lg">{{ __('New thread') }}</flux:heading>
+    @if ($this->canCreateThread())
+        <flux:card class="space-y-4">
+            <flux:heading size="lg">{{ __('New thread') }}</flux:heading>
 
-        <form wire:submit="createThread" class="space-y-4" data-test="create-thread-form">
-            <flux:input wire:model="subject" :label="__('Subject')" type="text" data-test="thread-subject" />
-            <flux:textarea wire:model="body" :label="__('Comment')" rows="4" required data-test="thread-body" />
-            <flux:input wire:model="image" type="file" :label="__('Image')" accept="image/jpeg,image/png,image/gif,image/webp" required data-test="thread-image" />
+            <form wire:submit="createThread" class="space-y-4" data-test="create-thread-form">
+                <flux:input wire:model="subject" :label="__('Subject')" type="text" data-test="thread-subject" />
+                <flux:textarea wire:model="body" :label="__('Comment')" rows="4" required data-test="thread-body" />
+                <flux:radio.group wire:model="visibility" :label="__('Visibility')" variant="cards" data-test="thread-visibility">
+                    @foreach (ThreadVisibility::cases() as $option)
+                        <flux:radio :value="$option->value" :label="$option->label()" :description="$option->description()" />
+                    @endforeach
+                </flux:radio.group>
+                <flux:input wire:model="image" type="file" :label="__('Image')" accept="image/jpeg,image/png,image/gif,image/webp" required data-test="thread-image" />
 
-            @if ($image)
-                <img src="{{ $image->temporaryUrl() }}" alt="" class="max-h-48 rounded-lg" />
-            @endif
+                @if ($image)
+                    <img src="{{ $image->temporaryUrl() }}" alt="" class="max-h-48 rounded-lg" />
+                @endif
 
-            <flux:button variant="primary" type="submit" data-test="create-thread-submit">
-                {{ __('Post thread') }}
-            </flux:button>
-        </form>
-    </flux:card>
+                <flux:button variant="primary" type="submit" data-test="create-thread-submit">
+                    {{ __('Post thread') }}
+                </flux:button>
+            </form>
+        </flux:card>
+    @endif
 
     <div class="space-y-3">
         @forelse ($this->threads as $thread)
@@ -124,9 +146,14 @@ new #[Layout('layouts::app'), Title('Board')] class extends Component {
                 @endif
 
                 <div class="min-w-0">
-                    <flux:heading size="lg">
-                        {{ $thread->subject ?: __('No subject') }}
-                    </flux:heading>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <flux:heading size="lg">
+                            {{ $thread->subject ?: __('No subject') }}
+                        </flux:heading>
+                        <flux:badge size="sm" :color="$thread->visibility->badgeColor()">
+                            {{ $thread->visibility->label() }}
+                        </flux:badge>
+                    </div>
                     <flux:text class="mt-1 truncate">
                         {{ $thread->openingPost?->body }}
                     </flux:text>

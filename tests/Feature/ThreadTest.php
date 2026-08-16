@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ThreadVisibility;
 use App\Models\Board;
 use App\Models\Post;
 use App\Models\Thread;
@@ -41,6 +42,7 @@ test('members can start a thread with an image', function () {
 
     expect($thread)->not->toBeNull()
         ->and($thread->subject)->toBe('Hello')
+        ->and($thread->visibility)->toBe(ThreadVisibility::Team)
         ->and($thread->openingPost->body)->toBe('First post')
         ->and($thread->openingPost->image)->not->toBeNull();
 

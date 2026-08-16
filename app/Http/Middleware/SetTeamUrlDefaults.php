@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Team;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -16,13 +17,33 @@ class SetTeamUrlDefaults
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($currentTeam = $request->user()?->currentTeam) {
+        $slug = $this->teamSlug($request);
+
+        if ($slug !== null) {
             URL::defaults([
-                'current_team' => $currentTeam->slug,
-                'team' => $currentTeam->slug,
+                'current_team' => $slug,
+                'team' => $slug,
             ]);
         }
 
         return $next($request);
+    }
+
+    /**
+     * Resolve the team slug from the route or the authenticated user.
+     */
+    protected function teamSlug(Request $request): ?string
+    {
+        $team = $request->route('current_team');
+
+        if ($team instanceof Team) {
+            return $team->slug;
+        }
+
+        if (is_string($team) && $team !== '') {
+            return $team;
+        }
+
+        return $request->user()?->currentTeam?->slug;
     }
 }

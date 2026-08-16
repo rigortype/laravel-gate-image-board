@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Enums\TeamPermission;
+use App\Enums\ThreadVisibility;
 use App\Models\Post;
 use App\Models\Thread;
 use App\Models\User;
@@ -12,17 +13,19 @@ class PostPolicy
     /**
      * Determine whether the user can view the post.
      */
-    public function view(User $user, Post $post): bool
+    public function view(?User $user, Post $post, ?string $shareToken = null): bool
     {
-        return $user->belongsToTeam($post->thread->board->team);
+        return $user?->can('view', [$post->thread, $shareToken])
+            ?? $post->thread->visibility === ThreadVisibility::Public;
     }
 
     /**
      * Determine whether the user can reply to the thread.
      */
-    public function create(User $user, Thread $thread): bool
+    public function create(User $user, Thread $thread, ?string $shareToken = null): bool
     {
-        return $user->belongsToTeam($thread->board->team);
+        return $user->belongsToTeam($thread->board->team)
+            && $user->can('view', [$thread, $shareToken]);
     }
 
     /**

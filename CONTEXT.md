@@ -31,3 +31,27 @@ _Avoid_: Comment, follow-up
 **Bump**:
 Updating a thread's last-activity time when a reply is added, so it rises on the board.
 _Avoid_: Bump order as a separate entity
+
+**Visibility**:
+Who may find and read a thread: public, team only, unlisted, or private.
+_Avoid_: Privacy, permission, publication status
+
+**Public**:
+A thread anyone can find on the board and read, including guests.
+_Avoid_: 一般公開 as a code name
+
+**Team only**:
+A thread only members of the board's team can find and read.
+_Avoid_: チーム限定公開 as a code name
+
+**Unlisted**:
+A thread omitted from catalogs. Anyone with the share link can read it.
+_Avoid_: URL限定公開 as a code name, secret
+
+**Private**:
+A thread only the author (and team moderators) can find and read.
+_Avoid_: 非公開 as a code name
+
+**Share token**:
+The unguessable identifier in an unlisted thread's share URL.
+_Avoid_: Password, slug, secret key

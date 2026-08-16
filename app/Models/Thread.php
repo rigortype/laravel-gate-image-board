@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\TeamPermission;
+use App\Enums\ThreadVisibility;
 use Database\Factories\ThreadFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +20,8 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $board_id
  * @property string|null $subject
+ * @property ThreadVisibility $visibility
+ * @property string|null $share_token
  * @property Carbon $bumped_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -23,11 +29,18 @@ use Illuminate\Support\Carbon;
  * @property-read Post|null $openingPost
  * @property-read Collection<int, Post> $posts
  */
-#[Fillable(['board_id', 'subject', 'bumped_at'])]
+#[Fillable(['board_id', 'subject', 'visibility', 'share_token', 'bumped_at'])]
 class Thread extends Model
 {
     /** @use HasFactory<ThreadFactory> */
     use HasFactory;
+
+    /**
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'visibility' => ThreadVisibility::Team->value,
+    ];
 
     /**
      * Get the board this thread belongs to.
@@ -60,6 +73,55 @@ class Thread extends Model
     }
 
     /**
+     * Determine whether the given user wrote the opening post.
+     */
+    public function isAuthoredBy(?User $user): bool
+    {
+        if ($user === null) {
+            return false;
+        }
+
+        return $this->openingPost?->user_id === $user->id;
+    }
+
+    /**
+     * Restrict the query to threads the viewer may see in a board catalog.
+     *
+     * @param  Builder<static>  $query
+     * @return Builder<static>
+     */
+    #[Scope]
+    protected function visibleInCatalogTo(Builder $query, ?User $user, Board $board): Builder
+    {
+        $isMember = $user !== null && $user->belongsToTeam($board->team);
+        $isModerator = $isMember && $user->hasTeamPermission($board->team, TeamPermission::UpdateTeam);
+
+        return $query->where(function (Builder $query) use ($user, $isMember, $isModerator) {
+            $query->where('visibility', ThreadVisibility::Public);
+
+            if ($isMember) {
+                $query->orWhere('visibility', ThreadVisibility::Team);
+            }
+
+            if ($isModerator) {
+                $query->orWhereIn('visibility', [
+                    ThreadVisibility::Unlisted,
+                    ThreadVisibility::Private,
+                ]);
+            } elseif ($user !== null) {
+                $query->orWhere(function (Builder $query) use ($user) {
+                    $query->whereIn('visibility', [
+                        ThreadVisibility::Unlisted,
+                        ThreadVisibility::Private,
+                    ])->whereHas('openingPost', function (Builder $query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    });
+                });
+            }
+        });
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -67,6 +129,7 @@ class Thread extends Model
     protected function casts(): array
     {
         return [
+            'visibility' => ThreadVisibility::class,
             'bumped_at' => 'datetime',
         ];
     }
